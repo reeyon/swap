@@ -242,7 +242,7 @@ namespace tools
     m_auto_refresh_period = DEFAULT_AUTO_REFRESH_PERIOD;
     m_last_auto_refresh_time = boost::posix_time::min_date_time;
 
-    check_background_mining();
+    //check_background_mining();
 
     m_net_server.set_threads_prefix("RPC");
     auto rng = [](size_t len, uint8_t *ptr) { return crypto::rand(len, ptr); };

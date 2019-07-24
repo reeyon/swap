@@ -448,30 +448,23 @@ namespace nodetool
     std::set<std::string> full_addrs;
     if (nettype == cryptonote::TESTNET)
     {
-      full_addrs.insert("212.83.175.67:28080");
-      full_addrs.insert("5.9.100.248:28080");
-      full_addrs.insert("163.172.182.165:28080");
-      full_addrs.insert("195.154.123.123:28080");
-      full_addrs.insert("212.83.172.165:28080");
+      full_addrs.insert("78.46.85.142:29949");
     }
     else if (nettype == cryptonote::STAGENET)
     {
-      full_addrs.insert("162.210.173.150:38080");
-      full_addrs.insert("162.210.173.151:38080");
+      full_addrs.insert("78.46.85.142:39949");
     }
     else if (nettype == cryptonote::FAKECHAIN)
     {
     }
     else
     {
-      full_addrs.insert("107.152.130.98:18080");
-      full_addrs.insert("212.83.175.67:18080");
-      full_addrs.insert("5.9.100.248:18080");
-      full_addrs.insert("163.172.182.165:18080");
-      full_addrs.insert("161.67.132.39:18080");
-      full_addrs.insert("198.74.231.92:18080");
-      full_addrs.insert("195.154.123.123:18080");
-      full_addrs.insert("212.83.172.165:18080");
+      full_addrs.insert("148.251.154.104:19949"); //joe - EU
+      full_addrs.insert("144.76.190.11:19949");   //snoopy - EU
+      full_addrs.insert("94.23.159.182:443");
+      full_addrs.insert("66.70.141.138:19949");   //lfy - NA
+      full_addrs.insert("195.201.186.172:19949");
+      full_addrs.insert("58.185.155.109:19949"); //reeyon - ASIA
     }
     return full_addrs;
   }
@@ -1257,7 +1250,7 @@ namespace nodetool
           {
             const epee::net_utils::network_address na = pe.adr;
             uint32_t actual_ip = na.as<const epee::net_utils::ipv4_network_address>().ip();
-            skip = classB.find(actual_ip & 0x0000ffff) != classB.end();
+            //skip = classB.find(actual_ip & 0x0000ffff) != classB.end();
           }
           if (skip)
             ++skipped;
@@ -2334,7 +2327,7 @@ namespace nodetool
     if (address.get_zone() != epee::net_utils::zone::public_)
       return false; // Unable to determine how many connections from host
 
-    const size_t max_connections = 1;
+    const size_t max_connections = 3;
     size_t count = 0;
 
     m_network_zones.at(epee::net_utils::zone::public_).m_net_server.get_config_object().foreach_connection([&](const p2p_connection_context& cntxt)
