@@ -172,16 +172,16 @@ int main(int argc, char const * argv[])
 
     if (command_line::get_arg(vm, command_line::arg_help))
     {
-      std::cout << "Monero '" << MONERO_RELEASE_NAME << "' (v" << MONERO_VERSION_FULL << ")" << ENDL << ENDL;
+      std::cout << "Swap '" << MONERO_RELEASE_NAME << "' (v" << MONERO_VERSION_FULL << ")" << ENDL << ENDL;
       std::cout << "Usage: " + std::string{argv[0]} + " [options|settings] [daemon_command...]" << std::endl << std::endl;
       std::cout << visible_options << std::endl;
       return 0;
     }
 
-    // Monero Version
+    // Swap Version
     if (command_line::get_arg(vm, command_line::arg_version))
     {
-      std::cout << "Monero '" << MONERO_RELEASE_NAME << "' (v" << MONERO_VERSION_FULL << ")" << ENDL;
+      std::cout << "Swap '" << MONERO_RELEASE_NAME << "' (v" << MONERO_VERSION_FULL << ")" << ENDL;
       return 0;
     }
 
@@ -278,7 +278,7 @@ int main(int argc, char const * argv[])
       tools::set_max_concurrency(command_line::get_arg(vm, daemon_args::arg_max_concurrency));
 
     // logging is now set up
-    MGINFO("Monero '" << MONERO_RELEASE_NAME << "' (v" << MONERO_VERSION_FULL << ")");
+    MGINFO("Swap '" << MONERO_RELEASE_NAME << "' (v" << MONERO_VERSION_FULL << ")");
 
     // If there are positional options, we're running a daemon command
     {
@@ -343,6 +343,16 @@ int main(int argc, char const * argv[])
         }
       }
     }
+
+#ifdef STACK_TRACE
+    tools::set_stack_trace_log(log_file_path.filename().string());
+#endif // STACK_TRACE
+
+    if (!command_line::is_arg_defaulted(vm, daemon_args::arg_max_concurrency))
+      tools::set_max_concurrency(command_line::get_arg(vm, daemon_args::arg_max_concurrency));
+
+    // logging is now set up
+    MGINFO("Swap '" << MONERO_RELEASE_NAME << "' (v" << MONERO_VERSION_FULL << ")");
 
     MINFO("Moving from main() into the daemonize now.");
 

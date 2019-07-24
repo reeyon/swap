@@ -195,18 +195,17 @@ RUN adduser --system --group --disabled-password monero && \
 	chown -R monero:monero /wallet
 
 # Contains the blockchain
-VOLUME /home/monero/.bitmonero
+VOLUME /root/.swap
 
 # Generate your wallet via accessing the container and run:
 # cd /wallet
-# monero-wallet-cli
+# swap-wallet-cli
 VOLUME /wallet
 
-EXPOSE 18080
-EXPOSE 18081
+EXPOSE 19949
+EXPOSE 19950
+EXPOSE 29949
+EXPOSE 29950
 
-# switch to user monero
-USER monero
-
-ENTRYPOINT ["monerod", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=18080", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=18081", "--non-interactive", "--confirm-external-bind"]
+ENTRYPOINT ["swapd", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=19949", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=19950", "--non-interactive", "--confirm-external-bind"]
 

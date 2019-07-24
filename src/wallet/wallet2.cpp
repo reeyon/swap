@@ -100,9 +100,9 @@ using namespace cryptonote;
 #define CHACHA8_KEY_TAIL 0x8c
 #define CACHE_KEY_TAIL 0x8d
 
-#define UNSIGNED_TX_PREFIX "Monero unsigned tx set\004"
-#define SIGNED_TX_PREFIX "Monero signed tx set\004"
-#define MULTISIG_UNSIGNED_TX_PREFIX "Monero multisig unsigned tx set\001"
+#define UNSIGNED_TX_PREFIX "Swap unsigned tx set\004"
+#define SIGNED_TX_PREFIX "Swap signed tx set\004"
+#define MULTISIG_UNSIGNED_TX_PREFIX "Swap multisig unsigned tx set\001"
 
 #define RECENT_OUTPUT_RATIO (0.5) // 50% of outputs are from the recent zone
 #define RECENT_OUTPUT_DAYS (1.8) // last 1.8 day makes up the recent zone (taken from monerolink.pdf, Miller et al)
@@ -116,11 +116,11 @@ using namespace cryptonote;
 #define SUBADDRESS_LOOKAHEAD_MAJOR 50
 #define SUBADDRESS_LOOKAHEAD_MINOR 200
 
-#define KEY_IMAGE_EXPORT_FILE_MAGIC "Monero key image export\003"
+#define KEY_IMAGE_EXPORT_FILE_MAGIC "Swap key image export\003"
 
-#define MULTISIG_EXPORT_FILE_MAGIC "Monero multisig export\001"
+#define MULTISIG_EXPORT_FILE_MAGIC "Swap multisig export\001"
 
-#define OUTPUT_EXPORT_FILE_MAGIC "Monero output export\004"
+#define OUTPUT_EXPORT_FILE_MAGIC "Swap output export\004"
 
 #define SEGREGATION_FORK_HEIGHT 99999999
 #define TESTNET_SEGREGATION_FORK_HEIGHT 99999999
@@ -238,13 +238,13 @@ namespace
 // Create on-demand to prevent static initialization order fiasco issues.
 struct options {
   const command_line::arg_descriptor<std::string> daemon_address = {"daemon-address", tools::wallet2::tr("Use daemon instance at <host>:<port>"), ""};
-  const command_line::arg_descriptor<std::string> daemon_host = {"daemon-host", tools::wallet2::tr("Use daemon instance at host <arg> instead of localhost"), ""};
+  const command_line::arg_descriptor<std::string> daemon_host = {"daemon-host", tools::wallet2::tr("Use daemon instance at host <arg> instead of localhost or use node.swap.fyi"), ""};
   const command_line::arg_descriptor<std::string> proxy = {"proxy", tools::wallet2::tr("[<ip>:]<port> socks proxy to use for daemon connections"), {}, true};
   const command_line::arg_descriptor<bool> trusted_daemon = {"trusted-daemon", tools::wallet2::tr("Enable commands which rely on a trusted daemon"), false};
   const command_line::arg_descriptor<bool> untrusted_daemon = {"untrusted-daemon", tools::wallet2::tr("Disable commands which rely on a trusted daemon"), false};
   const command_line::arg_descriptor<std::string> password = {"password", tools::wallet2::tr("Wallet password (escape/quote as needed)"), "", true};
   const command_line::arg_descriptor<std::string> password_file = {"password-file", tools::wallet2::tr("Wallet password file"), "", true};
-  const command_line::arg_descriptor<int> daemon_port = {"daemon-port", tools::wallet2::tr("Use daemon instance at port <arg> instead of 18081"), 0};
+  const command_line::arg_descriptor<int> daemon_port = {"daemon-port", tools::wallet2::tr("Use daemon instance at port <arg> instead of 19950"), 0};
   const command_line::arg_descriptor<std::string> daemon_login = {"daemon-login", tools::wallet2::tr("Specify username[:password] for daemon RPC client"), "", true};
   const command_line::arg_descriptor<std::string> daemon_ssl = {"daemon-ssl", tools::wallet2::tr("Enable SSL on daemon RPC connections: enabled|disabled|autodetect"), "autodetect"};
   const command_line::arg_descriptor<std::string> daemon_ssl_private_key = {"daemon-ssl-private-key", tools::wallet2::tr("Path to a PEM format private key"), ""};
@@ -1674,8 +1674,8 @@ void wallet2::scan_output(const cryptonote::transaction &tx, bool miner_tx, cons
     if (!m_encrypt_keys_after_refresh)
     {
       boost::optional<epee::wipeable_string> pwd = m_callback->on_get_password(pool ? "output found in pool" : "output received");
-      THROW_WALLET_EXCEPTION_IF(!pwd, error::password_needed, tr("Password is needed to compute key image for incoming monero"));
-      THROW_WALLET_EXCEPTION_IF(!verify_password(*pwd), error::password_needed, tr("Invalid password: password is needed to compute key image for incoming monero"));
+      THROW_WALLET_EXCEPTION_IF(!pwd, error::password_needed, tr("Password is needed to compute key image for incoming swap"));
+      THROW_WALLET_EXCEPTION_IF(!verify_password(*pwd), error::password_needed, tr("Invalid password: password is needed to compute key image for incoming swap"));
       decrypt_keys(*pwd);
       m_encrypt_keys_after_refresh = *pwd;
     }
@@ -6930,7 +6930,6 @@ uint64_t wallet2::get_base_fee() const
     else
       return m_light_wallet_per_kb_fee;
   }
-
   return get_dynamic_base_fee_estimate();
 }
 //----------------------------------------------------------------------------------------------------
@@ -12617,7 +12616,7 @@ std::string wallet2::make_uri(const std::string &address, const std::string &pay
     }
   }
 
-  std::string uri = "monero:" + address;
+  std::string uri = "swap:" + address;
   unsigned int n_fields = 0;
 
   if (!payment_id.empty())
@@ -12646,13 +12645,13 @@ std::string wallet2::make_uri(const std::string &address, const std::string &pay
 //----------------------------------------------------------------------------------------------------
 bool wallet2::parse_uri(const std::string &uri, std::string &address, std::string &payment_id, uint64_t &amount, std::string &tx_description, std::string &recipient_name, std::vector<std::string> &unknown_parameters, std::string &error)
 {
-  if (uri.substr(0, 7) != "monero:")
+  if (uri.substr(0, 5) != "swap:")
   {
-    error = std::string("URI has wrong scheme (expected \"monero:\"): ") + uri;
+    error = std::string("URI has wrong scheme (expected \"swap:\"): ") + uri;
     return false;
   }
 
-  std::string remainder = uri.substr(7);
+  std::string remainder = uri.substr(5);
   const char *ptr = strchr(remainder.c_str(), '?');
   address = ptr ? remainder.substr(0, ptr-remainder.c_str()) : remainder;
 
@@ -12955,7 +12954,7 @@ mms::multisig_wallet_state wallet2::get_multisig_wallet_state() const
   state.num_transfer_details = m_transfers.size();
   if (state.multisig)
   {
-    THROW_WALLET_EXCEPTION_IF(!m_original_keys_available, error::wallet_internal_error, "MMS use not possible because own original Monero address not available");
+    THROW_WALLET_EXCEPTION_IF(!m_original_keys_available, error::wallet_internal_error, "MMS use not possible because own original Swap address not available");
     state.address = m_original_address;
     state.view_secret_key = m_original_view_secret_key;
   }
