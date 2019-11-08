@@ -6034,11 +6034,11 @@ void simple_wallet::check_for_inactivity_lock(bool user)
       for (size_t i = 0; i < lines.size(); ++i)
         tools::msg_writer() << (i == 0 ? "/" : i == lines.size() - 1 ? "\\" : "|") << " " << lines[i].first << std::string(max_len - lines[i].second, ' ') << " " << (i == 0 ? "\\" : i == lines.size() - 1 ? "/" : "|");
       tools::msg_writer() << " " << std::string(n_u, '-') << std::endl <<
-          "        \\   (__)" << std::endl <<
-          "         \\  (oo)\\_______" << std::endl <<
-          "            (__)\\       )\\/\\" << std::endl <<
-          "                ||----w |" << std::endl <<
-          "                ||     ||" << std::endl <<
+          "       _____      ____ _ _ __  " << std::endl <<
+          "      / __\\ \\ /\\ / / _` | '_ \\ " << std::endl <<
+          "      \\__ \\  V  V / (_| | |_) |" << std::endl <<
+          "      |___/ \\_/\\_/ \\__,_| .__/ " << std::endl <<
+          "                        |_|    " << std::endl <<
           "" << std::endl;
     }
     while (1)
