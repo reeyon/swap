@@ -637,7 +637,15 @@ namespace cryptonote
   {
     static cn_pow_hash_v3 ctx;
     blobdata bd = get_block_hashing_blob(b);
-    ctx.hash(bd.data(), bd.size(), res.data);
+    if (b.major_version >= HF_VERSION_CUCKOO) {
+        uint32_t edges[32];
+        for(int i = 0; i < 32; i++) edges[i] = b.cycle.data[i];
+
+        ctx.hashc29(bd.data(), bd.size(), b.nonce, edges, res.data);
+    }
+    else{
+        ctx.hash(bd.data(), bd.size(), res.data);
+    }
     return true;
   }
 
