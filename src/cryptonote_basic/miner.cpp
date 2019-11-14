@@ -471,11 +471,11 @@ namespace cryptonote
   //-----------------------------------------------------------------------------------------------------
   bool miner::find_nonce_for_given_block(const get_block_hash_t &gbh, block& bl, const difficulty_type& diffic, uint64_t height)
   {
-    cn_pow_hash_v3 hash_ctx;
+    /*static cn_pow_hash_v3 hash_ctx;
     for(; bl.nonce != std::numeric_limits<uint32_t>::max(); bl.nonce++)
     {
       crypto::hash h;
-      gbh(bl, height, tools::get_max_concurrency(), h);
+      gbh(bl, height, tools::get_max_concurrency(), h, hash_ctx);
 
       if(check_hash(h, diffic))
       {
@@ -483,7 +483,7 @@ namespace cryptonote
         return true;
       }
     }
-    bl.invalidate_hashes();
+    bl.invalidate_hashes();*/
     return false;
   }
   //-----------------------------------------------------------------------------------------------------
@@ -530,7 +530,7 @@ namespace cryptonote
     block b;
     cn_pow_hash_v3 hash_ctx;
     ++m_threads_active;
-    while(!m_stop)
+    /*while(!m_stop)
     {
       if(m_pausers_count)//anti split workaround
       {
@@ -577,7 +577,8 @@ namespace cryptonote
 
       b.nonce = nonce;
       crypto::hash h;
-      m_gbh(b, height, tools::get_max_concurrency(), h);
+      cn_pow_hash_v3 ctx;
+      m_gbh(b, height, tools::get_max_concurrency(), h, ctx);
 
       if(check_hash(h, local_diff))
       {
@@ -598,7 +599,7 @@ namespace cryptonote
       nonce+=m_threads_total;
       ++m_hashes;
       ++m_total_hashes;
-    }
+    }*/
     MGINFO("Miner thread stopped ["<< th_local_index << "]");
     --m_threads_active;
     return true;

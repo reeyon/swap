@@ -620,22 +620,17 @@ namespace cryptonote
     bl.minor_version = CURRENT_BLOCK_MINOR_VERSION;
     bl.timestamp = 0;
     bl.nonce = nonce;
-    miner::find_nonce_for_given_block([](const cryptonote::block &b, uint64_t height, unsigned int threads, crypto::hash &hash){
-      return cryptonote::get_block_longhash(NULL, b, hash, height, threads);
-    }, bl, 1, 0);
+    static cn_pow_hash_v3 ctx;
+    crypto::hash h;
+    blobdata bd = get_block_hashing_blob(bl);
+    ctx.hash(bd.data(), bd.size(), h.data);
     bl.invalidate_hashes();
     return true;
   }
   //---------------------------------------------------------------
-  void get_altblock_longhash(const block& b, crypto::hash& res, const uint64_t main_height, const uint64_t height, const uint64_t seed_height, const crypto::hash& seed_hash)
-  {
-    blobdata bd = get_block_hashing_blob(b);
-    rx_slow_hash(main_height, seed_height, seed_hash.data, bd.data(), bd.size(), res.data, 0, 1);
-  }
 
-  bool get_block_longhash(const Blockchain *pbc, const block& b, crypto::hash& res, const uint64_t height, const int miners)
+  bool get_block_longhash(const Blockchain *pbc, const block& b, crypto::hash& res, const uint64_t height, const int miners, cn_pow_hash_v3 &ctx)
   {
-    static cn_pow_hash_v3 ctx;
     blobdata bd = get_block_hashing_blob(b);
     if (b.major_version >= HF_VERSION_CUCKOO) {
         uint32_t edges[32];
@@ -649,10 +644,10 @@ namespace cryptonote
     return true;
   }
 
-  crypto::hash get_block_longhash(const Blockchain *pbc, const block& b, const uint64_t height, const int miners)
+  crypto::hash get_block_longhash(const Blockchain *pbc, const block& b, const uint64_t height, const int miners, cn_pow_hash_v3 &ctx)
   {
     crypto::hash p = crypto::null_hash;
-    get_block_longhash(pbc, b, p, height, miners);
+    get_block_longhash(pbc, b, p, height, miners, ctx);
     return p;
   }
 
