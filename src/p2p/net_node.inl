@@ -599,11 +599,11 @@ namespace nodetool
     std::set<std::string> full_addrs;
     if (nettype == cryptonote::TESTNET)
     {
-      full_addrs.insert("78.46.85.142:29949");
+      full_addrs.insert("54.36.111.41:29949");
     }
     else if (nettype == cryptonote::STAGENET)
     {
-      full_addrs.insert("78.46.85.142:39949");
+      full_addrs.insert("54.36.111.41:39949");
     }
     else if (nettype == cryptonote::FAKECHAIN)
     {
@@ -2660,7 +2660,7 @@ namespace nodetool
     if (address.get_zone() != epee::net_utils::zone::public_)
       return false; // Unable to determine how many connections from host
 
-    const size_t max_connections = 3;
+    const size_t max_connections = 1;
     size_t count = 0;
 
     m_network_zones.at(epee::net_utils::zone::public_).m_net_server.get_config_object().foreach_connection([&](const p2p_connection_context& cntxt)
