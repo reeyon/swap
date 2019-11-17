@@ -108,22 +108,6 @@ t_command_server::t_command_server(
     , "Print whether a given key image is in the spent key images set."
     );
   m_command_lookup.set_handler(
-      "start_mining"
-    , std::bind(&t_command_parser_executor::start_mining, &m_parser, p::_1)
-    , "start_mining <addr> [<threads>|auto] [do_background_mining] [ignore_battery]"
-    , "Start mining for specified address. Defaults to 1 thread and no background mining. Use \"auto\" to autodetect optimal number of threads."
-    );
-  m_command_lookup.set_handler(
-      "stop_mining"
-    , std::bind(&t_command_parser_executor::stop_mining, &m_parser, p::_1)
-    , "Stop mining."
-    );
-  m_command_lookup.set_handler(
-      "mining_status"
-    , std::bind(&t_command_parser_executor::mining_status, &m_parser, p::_1)
-    , "Show current mining status."
-    );
-  m_command_lookup.set_handler(
       "print_pool"
     , std::bind(&t_command_parser_executor::print_transaction_pool_long, &m_parser, p::_1)
     , "Print the transaction pool using a long format."
@@ -294,11 +278,6 @@ t_command_server::t_command_server(
     , std::bind(&t_command_parser_executor::pop_blocks, &m_parser, p::_1)
     , "pop_blocks <nblocks>"
     , "Remove blocks from end of blockchain"
-    );
-    m_command_lookup.set_handler(
-      "rpc_payments"
-    , std::bind(&t_command_parser_executor::rpc_payments, &m_parser, p::_1)
-    , "Print information about RPC payments."
     );
     m_command_lookup.set_handler(
       "version"

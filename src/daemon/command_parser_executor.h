@@ -95,12 +95,6 @@ public:
 
   bool print_transaction_pool_stats(const std::vector<std::string>& args);
 
-  bool start_mining(const std::vector<std::string>& args);
-
-  bool stop_mining(const std::vector<std::string>& args);
-
-  bool mining_status(const std::vector<std::string>& args);
-
   bool stop_daemon(const std::vector<std::string>& args);
 
   bool print_status(const std::vector<std::string>& args);
@@ -142,8 +136,6 @@ public:
   bool sync_info(const std::vector<std::string>& args);
 
   bool pop_blocks(const std::vector<std::string>& args);
-
-  bool rpc_payments(const std::vector<std::string>& args);
 
   bool version(const std::vector<std::string>& args);
 
